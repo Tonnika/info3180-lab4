@@ -44,7 +44,24 @@ def upload():
 
     return render_template('upload.html')
 
+@app.route('/files')
+def files():
+    if session['logged_in']==True: 
+        return render_template('files.html')
+    return redirect(url_for('login'))
 
+@app.route('/get_uploaded_images')
+def get_uploaded_images():
+    file_list = []
+    for subdir, dirs, files in os.walk("app/static/uploads"):
+        for file in files:
+            if file[-4:] == '.jpg':
+                file_list.append("""<li> <img src="/static/uploads/{}" alt="picture" </li>""".format(file))
+            else:
+                file_list.append("<li> {} </li>".format(file))
+    return file_list
+        
+    
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
